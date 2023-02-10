@@ -1,0 +1,23 @@
+@import "~bootstrap/scss/bootstrap";
+
+:root {
+  font-family: open sans, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark;
+  color: black;
+  background-color: #f5f5f5;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+  --primary-color: #0b8b74;
+}
+
+body {
+  overflow: hidden;
+  background-color: #f5f5f5;
+}

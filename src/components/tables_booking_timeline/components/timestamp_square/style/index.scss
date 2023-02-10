@@ -1,0 +1,21 @@
+@use '/src/assets/colors/appColors' as *;
+
+.data-cell {
+  > div:first-of-type {
+    position: absolute;
+    top: 0;
+    right: 1px;
+    bottom: 1px;
+    left: 0;
+    box-sizing: border-box;
+    background-color: white;
+    cursor: pointer;
+    box-shadow: 0 1px 3px rgb(128 128 128 / 20%);
+    &:hover {
+      background-color: #d0e5f3 !important;
+    }
+    &.focus {
+      background-color: #fff9d2 !important;
+    }
+  }
+}

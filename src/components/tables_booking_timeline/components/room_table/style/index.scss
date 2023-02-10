@@ -1,0 +1,10 @@
+.room-table {
+  &:hover {
+    > td:first-of-type {
+      font-weight: 700;
+    }
+    > td > div > div:first-of-type {
+      background-color: #fff9d2;
+    }
+  }
+}

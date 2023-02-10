@@ -1,0 +1,24 @@
+.tables-booking-timeline {
+  > table {
+    width: 100%;
+    table-layout: fixed;
+    border-spacing: 0;
+    user-select: none;
+    > tbody {
+      > tr {
+        > td {
+          position: relative;
+          height: 20px;
+          width: auto;
+        }
+        > td:first-of-type {
+          width: 100px;
+        }
+        > td.timeline-hour {
+          font-size: small;
+          font-weight: 700;
+        }
+      }
+    }
+  }
+}

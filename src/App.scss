@@ -1,0 +1,22 @@
+#root {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-around;
+  position: relative;
+  gap: 1vw;
+  height: 100%;
+
+  /* Background */
+  padding: 2vh 1vw;
+}

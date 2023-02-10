@@ -1,0 +1,28 @@
+.capacity-square {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: 0;
+  right: 1px;
+  bottom: 1px;
+  left: 0;
+  box-sizing: border-box;
+  background-color: #b6b6b6;
+  height: 20px;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgb(128 128 128 / 20%);
+  > span {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: xx-small;
+    color: white;
+  }
+  &:hover,
+  &.focus {
+    background-color: #7d7d7d !important;
+  }
+  &.locked {
+    background-color: red !important;
+  }
+}
