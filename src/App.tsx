@@ -1,15 +1,15 @@
 import './App.scss';
-import TablesBookingTimeline from './components/tables_booking_timeline';
+import TableBookingCalendar from './components/table_booking_calendar';
 import { useDataStore } from './store/dataStore';
 
 function App() {
   const { data, onChanges } = useDataStore();
   return (
     <div className="app-container">
-      <TablesBookingTimeline
+      <TableBookingCalendar
         data={data}
         lockedTime={['11:15']}
-        timeRange={{ endHour: 24, startHour: 10, step: 15 }}
+        timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
           <div>
             <ul>

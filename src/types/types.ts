@@ -7,6 +7,10 @@ export interface Reservation {
   color?: string;
   isLocked?: boolean;
 }
+export interface HourMinute {
+  hour: string;
+  minute: string;
+}
 export interface TimeBlock {
   time: string;
   guestsCount: number;

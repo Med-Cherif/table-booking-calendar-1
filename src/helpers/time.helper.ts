@@ -1,5 +1,7 @@
+import { HourMinute } from '../types/types';
+
 export function rangeToTime(startTime: number, endTime: number, step: number) {
-  const res: { hour: string; minute: string }[] = [];
+  const res: HourMinute[] = [];
   for (let i = 0; i < endTime - startTime; i++) {
     for (let j = 0; j < 60; j += step) {
       const hour = i + startTime;

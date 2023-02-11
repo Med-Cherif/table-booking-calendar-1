@@ -1,12 +1,17 @@
 import { useDroppable } from '@dnd-kit/core';
 import './style/index.scss';
-import { ChangeType, Reservation, Table } from '../../../../types/types';
+import {
+  ChangeType,
+  HourMinute,
+  Reservation,
+  Table,
+} from '../../../../types/types';
 import DataCell from '../data_cell';
 import DragableResizableItem from '../dragable_resizable_item';
 interface RoomTableProps {
   table: Table;
   row: number;
-  rangeList: { minute: string; hour: string }[];
+  rangeList: HourMinute[];
   onReservationChange?: (change: ChangeType) => void;
   onEmptyCellClick?: (timeIndex: number) => void;
   reservationModal?: (

@@ -7,7 +7,6 @@ import {
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
-import { isWithinInterval, parse, subMinutes } from 'date-fns';
 import {
   ChangeType,
   Reservation,
@@ -21,39 +20,9 @@ import { useEventsStore } from '../../store/eventsStore';
 import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import TimeIndicator from './components/time_indicator';
+import { calculateTimeBlock } from '../../helpers/math.helper';
 
-function calculateCapacity(
-  data: Room[],
-  time: { hour: string; minute: string },
-): TimeBlock {
-  let guestsCount = 0;
-  let reservationCount = 0;
-  let reservationGuests = 0;
-  data.forEach(({ tables }) => {
-    tables.forEach(({ reservations }) => {
-      reservations.forEach(({ start, end, capacity }) => {
-        const current = `${time.hour}:${time.minute}`;
-        const currentDate = parse(current, 'HH:mm', new Date());
-        const startDate = parse(start, 'HH:mm', new Date());
-        const endDate = subMinutes(parse(end, 'HH:mm', new Date()), 1);
-        if (start == current) {
-          reservationGuests += capacity;
-          reservationCount++;
-        }
-
-        if (isWithinInterval(currentDate, { start: startDate, end: endDate }))
-          guestsCount += capacity;
-      });
-    });
-  });
-  return {
-    guestsCount,
-    reservationCount,
-    reservationGuests,
-    time: `${time.hour}:${time.minute}`,
-  };
-}
-interface TablesBookingTimelineProps {
+interface TableBookingCalendarProps {
   data: Room[];
   timeRange: TimeRange;
   lockedTime: string[];
@@ -69,7 +38,7 @@ interface TablesBookingTimelineProps {
   onReservationClick?: (reservation: Reservation) => void;
 }
 
-export default function TablesBookingTimeline({
+export default function TableBookingCalendar({
   data,
   timeRange,
   lockedTime,
@@ -80,7 +49,7 @@ export default function TablesBookingTimeline({
   reservationModal,
   capacityModal,
   onReservationClick,
-}: TablesBookingTimelineProps) {
+}: TableBookingCalendarProps) {
   const rangeList = useMemo(
     () => rangeToTime(timeRange.startHour, timeRange.endHour, timeRange.step),
     [timeRange],
@@ -100,12 +69,12 @@ export default function TablesBookingTimeline({
   const isDraging = useEventsStore((event) => event.isDraging);
   const lockedMovingRef = useRef(false);
   const timeBlocks = useMemo(
-    () => rangeList.map((time) => calculateCapacity(data, time)),
+    () => rangeList.map((time) => calculateTimeBlock(data, time)),
     [data, rangeList],
   );
   return (
     <div
-      className="tables-booking-timeline"
+      className="table-booking-calendar"
       style={
         isDraging || isResizing
           ? {
@@ -120,7 +89,6 @@ export default function TablesBookingTimeline({
     >
       <DndContext
         onDragStart={(e) => {
-          //is reservation is locked, don't allow drag
           if (e?.active?.data?.current?.isLocked) {
             lockedMovingRef.current = true;
           } else lockedMovingRef.current = false;
@@ -228,7 +196,7 @@ export default function TablesBookingTimeline({
       </DndContext>
       <TimeIndicator timeRange={timeRange} />
       <div className="tooltips">
-        {rangeList.map((time, index) => (
+        {rangeList.map((_, index) => (
           <Tooltip
             key={index}
             style={{ zIndex: 99, position: 'absolute' }}
@@ -260,7 +228,7 @@ export default function TablesBookingTimeline({
         ))}
         {Array.from({ length: tableCount }).map((_, row) => (
           <Fragment key={row}>
-            {rangeList.map((time, index) => {
+            {rangeList.map((__, index) => {
               return (
                 <Tooltip
                   key={index}
