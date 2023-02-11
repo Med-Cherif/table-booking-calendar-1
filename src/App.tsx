@@ -11,19 +11,13 @@ function App() {
         lockedTime={['11:15']}
         timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
-          <div>
-            <ul>
-              <li>
-                ({reservation.name}),{reservation.capacity} pers.
-              </li>
-              <li>
-                {reservation.start} - {reservation.end}
-              </li>
-            </ul>
+          <div style={{ fontSize: 'x-small' }}>
+            ({reservation.name}),{reservation.capacity} pers. <br />
+            {reservation.start} - {reservation.end}
           </div>
         )}
         cellTooltip={(timeBlock) => (
-          <div>
+          <div style={{ fontSize: 'x-small' }}>
             {timeBlock.time}
             <br />
             guest: {timeBlock.reservationGuests}
@@ -45,15 +39,34 @@ function App() {
         }}
         reservationModal={(reservation, close) => {
           return (
-            <div>
-              <p>{reservation.name}</p>
+            <div
+              style={{
+                fontSize: 'small',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
+                gap: 10,
+              }}
+            >
+              ({reservation.name}),{reservation.capacity} pers. <br />
+              {reservation.start} - {reservation.end}
               <button onClick={close}>Close</button>
             </div>
           );
         }}
         capacityModal={(timeBlock, close) => {
           return (
-            <div>
+            <div
+              style={{
+                fontSize: 'small',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'flex-start',
+                gap: 10,
+              }}
+            >
               {timeBlock.time}
               <br />
               guest: {timeBlock.reservationGuests}
