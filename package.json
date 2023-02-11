@@ -17,8 +17,6 @@
   "module": "./dist/table-booking-calendar.es.js",
   "types": "./dist/index.d.ts",
   "scripts": {
-    "prepare": "husky install",
-    "create-hook": "husky add .husky/pre-commit \"yarn lint-staged\"",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
