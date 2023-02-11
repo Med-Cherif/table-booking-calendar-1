@@ -6,7 +6,7 @@ React component for booking calendar. It is a calendar with a list of available 
 
 ### Preview
 
-![Preview](assets/example.gif)
+![Preview](assets/example1.gif)
 
 ## Usage
 
