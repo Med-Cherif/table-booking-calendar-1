@@ -9,7 +9,7 @@ function App() {
       <TablesBookingTimeline
         data={data}
         lockedTime={['11:15']}
-        timeRange={{ endHour: 21, startHour: 10, step: 15 }}
+        timeRange={{ endHour: 24, startHour: 10, step: 15 }}
         reservationTooltip={(reservation) => (
           <div>
             <ul>
@@ -22,13 +22,26 @@ function App() {
             </ul>
           </div>
         )}
-        cellTooltip={(time) => <div>{time}</div>}
+        cellTooltip={(timeBlock) => (
+          <div>
+            {timeBlock.time}
+            <br />
+            guest: {timeBlock.reservationGuests}
+            <br />
+            booking: {timeBlock.reservationCount}
+            <br />
+            guest(total): {timeBlock.guestsCount}
+          </div>
+        )}
         onReservationChange={(change) => {
           console.log(change);
           onChanges(change);
         }}
         onEmptyCellClick={(time) => {
           console.log(time);
+        }}
+        onReservationClick={(reservation) => {
+          console.log(reservation);
         }}
         reservationModal={(reservation, close) => {
           return (
@@ -38,10 +51,16 @@ function App() {
             </div>
           );
         }}
-        capacityModal={(time, close) => {
+        capacityModal={(timeBlock, close) => {
           return (
             <div>
-              <p>{time}</p>
+              {timeBlock.time}
+              <br />
+              guest: {timeBlock.reservationGuests}
+              <br />
+              booking: {timeBlock.reservationCount}
+              <br />
+              guest(total): {timeBlock.guestsCount}
               <button onClick={close}>Close</button>
             </div>
           );
@@ -52,3 +71,10 @@ function App() {
 }
 
 export default App;
+/*
+- Locked reservations 
+- Double click reservation
+- Room text style and info
+- color
+- grid style
+*/

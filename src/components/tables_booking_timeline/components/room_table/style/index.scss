@@ -1,10 +1,13 @@
 .room-table {
+  > td:first-of-type {
+    font-size: small;
+  }
   &:hover {
     > td:first-of-type {
       font-weight: 700;
     }
     > td > div > div:first-of-type {
-      background-color: #fff9d2;
+      background-color: #fff9d2 !important ;
     }
   }
 }

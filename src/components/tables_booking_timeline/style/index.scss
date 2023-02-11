@@ -1,4 +1,11 @@
 .tables-booking-timeline {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-start;
+  width: fit-content;
+  height: fit-content;
+  overflow: hidden;
   > table {
     width: 100%;
     table-layout: fixed;
@@ -11,12 +18,27 @@
           height: 20px;
           width: auto;
         }
+
         > td:first-of-type {
           width: 100px;
         }
+
         > td.timeline-hour {
           font-size: small;
           font-weight: 700;
+        }
+      }
+      > tr.room {
+        position: relative;
+        > td.room-info {
+          position: absolute;
+          right: 0;
+          bottom: 0;
+          font-size: small;
+        }
+        > td.room-details {
+          font-weight: bold;
+          font-size: medium;
         }
       }
     }

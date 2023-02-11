@@ -4,6 +4,19 @@ export interface Reservation {
   end: string;
   capacity: number;
   name: string;
+  color?: string;
+  isLocked?: boolean;
+}
+export interface TimeBlock {
+  time: string;
+  guestsCount: number;
+  reservationGuests: number;
+  reservationCount: number;
+}
+export interface TimeRange {
+  startHour: number;
+  endHour: number;
+  step: number;
 }
 export interface Table {
   id: number;

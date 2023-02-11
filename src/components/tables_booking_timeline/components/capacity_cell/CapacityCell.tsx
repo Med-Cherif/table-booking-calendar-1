@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { Overlay, Tooltip } from 'react-bootstrap';
+import { Overlay } from 'react-bootstrap';
 import './style/index.scss';
 import {
   useEventsStore,
@@ -7,26 +7,24 @@ import {
 } from '../../../../store/eventsStore';
 import { ReactNode, useRef, useState } from 'react';
 import ModalTip from '../modal_tip';
+import { TimeBlock } from '../../../../types/types';
 interface CapacityCellProps {
   index: number;
-  capacity: number;
+  timeBlock: TimeBlock;
   isLocked?: boolean;
   modal?: (close: () => void) => ReactNode;
-  tooltip?: ReactNode;
 }
 export default function CapacityCell({
-  capacity,
+  timeBlock,
   index,
   isLocked,
   modal,
-  tooltip,
 }: CapacityCellProps) {
   const focus = useFocusedCapacity();
   const onHover = (value: boolean) => {
     useEventsStore.getState().setFocusedTimestamp(value ? index : -1);
   };
   const ref = useRef<HTMLDivElement | null>(null);
-  const [showTip, setShowTip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const handleClose = () => {
     setShowModal(false);
@@ -35,30 +33,25 @@ export default function CapacityCell({
     <>
       <div
         className={
-          'capacity-square' +
+          'capacity-cell' +
           (focus == index ? ' focus' : '') +
           (isLocked ? ' locked' : '')
         }
         ref={ref}
-        onMouseOver={() => {
+        onMouseEnter={() => {
           onHover?.(true);
-          setShowTip(true);
         }}
-        onMouseOut={() => {
+        onMouseLeave={() => {
           onHover?.(false);
-          setShowTip(false);
         }}
         onClick={() => {
           setShowModal(true);
         }}
+        id={`capacity-cell-${index}`}
       >
-        <span>{capacity}</span>
+        <span>{timeBlock.reservationCount}</span>
       </div>
-      {tooltip && (
-        <Overlay target={ref.current} show={showTip} placement="bottom">
-          <Tooltip>{tooltip}</Tooltip>
-        </Overlay>
-      )}
+
       {modal && (
         <Overlay target={ref.current} show={showModal} placement="bottom">
           {({

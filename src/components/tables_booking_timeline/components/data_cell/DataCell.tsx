@@ -1,6 +1,5 @@
-import { ReactNode, useRef, useState } from 'react';
+import { ReactNode, useRef } from 'react';
 import './style/index.scss';
-import { Overlay, Tooltip } from 'react-bootstrap';
 import {
   useEventsStore,
   useFocusedTimestamp,
@@ -8,42 +7,46 @@ import {
 interface DataCellProps {
   children?: ReactNode;
   onClick?: () => void;
-  tooltip?: ReactNode;
   index: number;
+  row: number;
+  pair?: boolean;
 }
 export default function DataCell({
   children,
   onClick,
   index,
-  tooltip,
+  row,
+  pair,
 }: DataCellProps) {
   const focused = useFocusedTimestamp();
   const onHover = (value: boolean) => {
     useEventsStore.getState().setFocusedCapacity(value ? index : -1);
   };
   const ref = useRef<HTMLDivElement | null>(null);
-  const [showTip, setShowTip] = useState(false);
   return (
     <>
       <div
         className={'data-cell'}
-        onMouseEnter={onHover ? () => onHover(true) : undefined}
-        onMouseOut={onHover ? () => onHover(false) : undefined}
+        onMouseEnter={() => onHover(true)}
+        onMouseLeave={() => onHover(false)}
       >
         <div
           className={'data-cell-content' + (focused == index ? ' focus' : '')}
           ref={ref}
           onClick={onClick}
-          onMouseOver={() => setShowTip(true)}
-          onMouseOut={() => setShowTip(false)}
+          id={`data-cell-${index}-${row}`}
+          style={{ backgroundColor: !pair ? 'white' : '#f7f7f7' }}
         ></div>
         {children}
       </div>
-      {tooltip && (
-        <Overlay target={ref.current} show={showTip} placement="bottom">
-          <Tooltip>{tooltip}</Tooltip>
-        </Overlay>
-      )}
     </>
   );
 }
+/*
+// - Locked reservations 
+// - Double click reservation
+// - Room text style and info
+// - color
+// - grid style*
+
+*/

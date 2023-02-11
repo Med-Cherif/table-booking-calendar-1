@@ -1,41 +1,36 @@
 import { useDroppable } from '@dnd-kit/core';
 import './style/index.scss';
 import { ChangeType, Reservation, Table } from '../../../../types/types';
-import DataCell from '../timestamp_square';
-import DragableResizableItem from '../resizable_button';
+import DataCell from '../data_cell';
+import DragableResizableItem from '../dragable_resizable_item';
 interface RoomTableProps {
   table: Table;
+  row: number;
   rangeList: { minute: string; hour: string }[];
-  reservationTooltip?: (reservation: Reservation) => React.ReactNode;
   onReservationChange?: (change: ChangeType) => void;
-  cellTooltip?: (time: string) => React.ReactNode;
-  onEmptyCellClick?: (time: string) => void;
+  onEmptyCellClick?: (timeIndex: number) => void;
   reservationModal?: (
     reservation: Reservation,
     close: () => void,
   ) => React.ReactNode;
+  onReservationClick?: (reservation: Reservation) => void;
 }
 
 export default function RoomTable({
   table,
+  row,
   rangeList,
-  reservationTooltip,
   onReservationChange,
-  cellTooltip,
   onEmptyCellClick,
   reservationModal,
+  onReservationClick,
 }: RoomTableProps) {
   const { setNodeRef, isOver } = useDroppable({
     id: table.id.toString(),
   });
   return (
-    <tr
-      className="room-table"
-      key={table.id}
-      ref={setNodeRef}
-      style={{ color: isOver ? 'green' : undefined }}
-    >
-      <td>
+    <tr className="room-table" key={table.id} ref={setNodeRef}>
+      <td style={{ fontWeight: isOver ? 700 : undefined }}>
         {table.name}
         {'(' + table.capacity + ')'}
       </td>
@@ -52,24 +47,23 @@ export default function RoomTable({
                 h == endTime?.[0] && m == endTime?.[1],
             ) - index;
         }
+
         return (
           <td key={index} className="table-item">
             <DataCell
               index={index}
-              tooltip={cellTooltip?.(`${hour}:${minute}`)}
-              onClick={() => onEmptyCellClick?.(`${hour}:${minute}`)}
+              pair={Math.floor(index / 4) % 2 == 0}
+              row={row}
+              onClick={() => onEmptyCellClick?.(index)}
             >
               {reservation && (
                 <DragableResizableItem
+                  onDoubleClick={() => onReservationClick?.(reservation)}
                   modal={(close) => reservationModal?.(reservation, close)}
                   reservation={reservation}
-                  tooltip={reservationTooltip?.(reservation)}
                   factor={factor ?? 1}
                   onResized={(f) => {
                     const newEndTime = rangeList[index + f];
-                    // console.log(
-                    //   `reservation ${reservation.id} resized to ${newEndTime.hour}:${newEndTime.minute}`,
-                    // );
                     onReservationChange?.({
                       type: 'resized',
                       newEndTime: `${newEndTime.hour}:${newEndTime.minute}`,

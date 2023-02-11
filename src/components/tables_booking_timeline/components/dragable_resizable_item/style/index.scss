@@ -1,7 +1,4 @@
-@use '/src/assets/colors/appColors' as *;
-
 .dragable-resizable-item {
-  background-color: $primary;
   padding: 5px;
   display: flex;
   flex-direction: row;

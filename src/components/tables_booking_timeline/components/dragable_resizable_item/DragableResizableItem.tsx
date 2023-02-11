@@ -1,31 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef, useState } from 'react';
 import './style/index.scss';
-import { Overlay, Tooltip } from 'react-bootstrap';
+import { Overlay } from 'react-bootstrap';
 import { useDraggable } from '@dnd-kit/core';
 import { useEventsStore } from '../../../../store/eventsStore';
 import ModalTip from '../modal_tip';
+import { Reservation } from '../../../../types/types';
+import lock from '../../../../assets/icons/lock.svg';
+
 interface DragableResizableItemProps {
   factor: number;
   onResized?: (factor: number) => void;
   onResizeStart?: () => void;
   onResizeEnd?: () => void;
   modal?: (close: () => void) => React.ReactNode;
-  tooltip?: React.ReactNode;
-  reservation: {
-    id: number;
-    start: string;
-    end: string;
-    capacity: number;
-    name: string;
-  };
+  reservation: Reservation;
+  onDoubleClick?: () => void;
 }
 
 const verticalDrag = (style: React.CSSProperties | undefined) =>
   style?.transform
     ? {
         ...style,
-        transform: `translate(0px, ${style.transform.split(',')[1]}`,
+        transform: `translateY(${style.transform.split(',')[1]}`,
       }
     : style;
 
@@ -34,7 +31,7 @@ export default function DragableResizableItem({
   onResized,
   reservation,
   modal,
-  tooltip,
+  onDoubleClick,
 }: DragableResizableItemProps) {
   const resizableRef = useRef<HTMLDivElement | null>(null);
   const resizableCursorRef = useRef<HTMLDivElement | null>(null);
@@ -58,6 +55,7 @@ export default function DragableResizableItem({
       setForceRender((f) => !f);
     }
     window.addEventListener('resize', resize);
+    if (reservation.isLocked) return;
     const { current } = resizableRef;
     const { current: cursor } = resizableCursorRef;
     if (!current || !cursor) return;
@@ -100,10 +98,8 @@ export default function DragableResizableItem({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [factor]);
 
-  const [showTip, setShowTip] = useState(false);
   const [showModal, setShowModal] = useState(false);
   function handleModalClose() {
-    setShowTip(false);
     setShowModal(false);
   }
   const { attributes, listeners, setNodeRef, transform, isDragging } =
@@ -121,37 +117,38 @@ export default function DragableResizableItem({
     <>
       <div
         className="dragable-resizable-item"
+        id={`reservation-${reservation.id}`}
         ref={(e) => {
-          setNodeRef(e);
           resizableRef.current = e;
+          if (reservation.isLocked) return;
+          setNodeRef(e);
         }}
-        style={{ width: `${widthRef.current}px`, ...verticalDrag(style) }}
-        onMouseOver={() => setShowTip(true)}
-        onMouseOut={() => setShowTip(false)}
+        onClick={(e) => {
+          if (e.detail === 2) onDoubleClick?.();
+        }}
+        style={{
+          width: `${widthRef.current}px`,
+          ...(reservation.isLocked ? {} : verticalDrag(style)),
+          backgroundColor: reservation.color ?? '#b95501',
+        }}
       >
+        {reservation.isLocked && <img src={lock} />}
         <span
           {...listeners}
           {...attributes}
           onClick={() => {
             setShowModal(!showModal);
-            setShowTip(false);
           }}
         >
           {reservation.name}
         </span>
-        <div className="resize-cursor" ref={resizableCursorRef}>
-          <div />
-        </div>
+        {!reservation.isLocked && (
+          <div className="resize-cursor" ref={resizableCursorRef}>
+            <div />
+          </div>
+        )}
       </div>
-      {tooltip && (
-        <Overlay
-          target={resizableRef.current}
-          show={showTip && !isDragging}
-          placement="bottom"
-        >
-          <Tooltip>{tooltip}</Tooltip>
-        </Overlay>
-      )}
+
       {modal && (
         <Overlay
           target={resizableRef.current}

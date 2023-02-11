@@ -48,6 +48,8 @@ export const useDataStore = create<DataState>()(
                   end: '11:00',
                   capacity: 10,
                   name: 'Reservation F',
+                  isLocked: true,
+                  color: 'red',
                 },
               ],
             },
