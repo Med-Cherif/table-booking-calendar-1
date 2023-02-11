@@ -17,6 +17,7 @@
   "module": "./dist/table-booking-calendar.es.js",
   "types": "./dist/index.d.ts",
   "scripts": {
+    "prepare": "npm run build",
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
