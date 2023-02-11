@@ -1,7 +1,8 @@
 {
-  "name": "room-booking",
-  "private": true,
-  "version": "0.0.0",
+  "name": "table-booking-calendar",
+  "license": "MIT",
+  "version": "0.1.1",
+  "description": "Table booking calendar",
   "scripts": {
     "dev": "vite",
     "build": "tsc && vite build",
