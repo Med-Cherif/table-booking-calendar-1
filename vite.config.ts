@@ -19,6 +19,7 @@ export default defineConfig((configEnv) => ({
     }),
     dts({
       include: ['src/components/table_booking_calendar'],
+      insertTypesEntry: true,
     }),
   ],
   resolve: {
@@ -35,6 +36,12 @@ export default defineConfig((configEnv) => ({
     },
     rollupOptions: {
       external: [...Object.keys(packageJson.peerDependencies)],
+      output: {
+        globals: {
+          react: 'React',
+          'react-dom': 'ReactDOM',
+        },
+      },
     },
   },
 }));
