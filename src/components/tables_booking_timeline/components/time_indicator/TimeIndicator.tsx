@@ -1,5 +1,5 @@
 import { parse, differenceInMinutes, format } from 'date-fns';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { TimeRange } from '../../../../types/types';
 import './style/index.scss';
 import { Tooltip } from 'react-tooltip';
@@ -8,8 +8,10 @@ interface TimeIndicatorProps {
 }
 export default function TimeIndicator({ timeRange }: TimeIndicatorProps) {
   const divRef = useRef<HTMLDivElement>(null);
+  const [_, setTime] = useState(Date.now());
 
   useEffect(() => {
+    const interval = setInterval(() => setTime(Date.now()), 60000);
     if (!divRef.current) return;
     const resize = () => {
       if (!divRef.current) return;
@@ -36,6 +38,7 @@ export default function TimeIndicator({ timeRange }: TimeIndicatorProps) {
     divRef.current.style.left = left + 'px';
     window.addEventListener('resize', resize);
     return () => {
+      clearInterval(interval);
       window.removeEventListener('resize', resize);
     };
   }, [timeRange]);
