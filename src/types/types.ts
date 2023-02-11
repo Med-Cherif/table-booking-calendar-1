@@ -1,7 +1,7 @@
 export interface Reservation {
   id: number;
   start: string;
-  end: string;
+  end: string; //"08:55" format(newDate,"HH:mm")
   capacity: number;
   name: string;
   color?: string;
@@ -13,9 +13,9 @@ export interface HourMinute {
 }
 export interface TimeBlock {
   time: string;
-  guestsCount: number;
-  reservationGuests: number;
-  reservationCount: number;
+  guestsCount: number; //total guests count
+  reservationGuests: number; //guests count for this reservation
+  reservationCount: number; //total reservations count
 }
 export interface TimeRange {
   startHour: number;
