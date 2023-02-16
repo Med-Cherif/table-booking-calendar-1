@@ -54,6 +54,7 @@ export default function DragableResizableItem({
         document.querySelector('.table-item')?.getClientRects()[0]?.width ?? 0;
       tdWidthRef.current = wtd;
       widthRef.current = wtd * factorRef.current;
+      console.log({ wd, factor });
       setForceRender((f) => !f);
     }
     window.addEventListener('resize', resize);
@@ -114,6 +115,10 @@ export default function DragableResizableItem({
         transform: `translate3d(${transform.x}px, ${transform.y}px, 0)`,
       }
     : undefined;
+
+  useEffect(() => {
+    factorRef.current = factor;
+  }, [factor]);
 
   return (
     <>

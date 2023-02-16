@@ -20,40 +20,13 @@ export const useDataStore = create<DataState>()(
               id: 1,
               name: 'Table A',
               seats: 6,
-              reservations: [
-                {
-                  id: 1,
-                  time: '10:00',
-                  end: '11:45',
-                  persons: 2,
-                  name: 'Reservation A',
-                  lock_tables: false,
-                },
-                {
-                  id: 2,
-                  time: '12:00',
-                  end: '13:45',
-                  persons: 2,
-                  name: 'Reservation B',
-                  lock_tables: true,
-                },
-              ],
+              reservations: [],
             },
             {
               id: 2,
               name: 'Table B',
               seats: 8,
-              reservations: [
-                {
-                  id: 8,
-                  time: '10:00',
-                  end: '11:00',
-                  persons: 10,
-                  name: 'Reservation F',
-                  lock_tables: true,
-                  color: 'red',
-                },
-              ],
+              reservations: [],
             },
           ],
         },
@@ -74,14 +47,6 @@ export const useDataStore = create<DataState>()(
                   name: 'Reservation C',
                   lock_tables: false
                 },
-                {
-                  id: 4,
-                  time: '13:00',
-                  end: '14:45',
-                  persons: 2,
-                  name: 'Reservation D',
-                  lock_tables: false
-                },
               ],
             },
             {
@@ -95,14 +60,6 @@ export const useDataStore = create<DataState>()(
                   end: '18:45',
                   persons: 2,
                   name: 'Reservation C',
-                  lock_tables: false
-                },
-                {
-                  id: 5,
-                  time: '15:00',
-                  end: '16:00',
-                  persons: 10,
-                  name: 'Reservation E',
                   lock_tables: false
                 },
               ],
