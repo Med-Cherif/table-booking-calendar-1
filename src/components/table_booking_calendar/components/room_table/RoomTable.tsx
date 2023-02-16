@@ -37,11 +37,11 @@ export default function RoomTable({
     <tr className="room-table" key={table.id} ref={setNodeRef}>
       <td style={{ fontWeight: isOver ? 700 : undefined }}>
         {table.name}
-        {'(' + table.capacity + ')'}
+        {'(' + table.seats + ')'}
       </td>
       {rangeList.map(({ hour, minute }, index) => {
         const reservation = table.reservations.find(
-          ({ start }) => start == `${hour}:${minute}`,
+          ({ time }) => time == `${hour}:${minute}`,
         );
         let endTime: any, factor;
         if (reservation) {
@@ -63,6 +63,7 @@ export default function RoomTable({
             >
               {reservation && (
                 <DragableResizableItem
+                  tableId={table.id}
                   onDoubleClick={() => onReservationClick?.(reservation)}
                   modal={(close) => reservationModal?.(reservation, close)}
                   reservation={reservation}

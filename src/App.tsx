@@ -9,11 +9,12 @@ function App() {
       <TableBookingCalendar
         data={data}
         lockedTime={['11:15']}
+        date={new Date()}
         timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
           <div style={{ fontSize: 'x-small' }}>
-            ({reservation.name}),{reservation.capacity} pers. <br />
-            {reservation.start} - {reservation.end}
+            ({reservation.name}),{reservation.persons} pers. <br />
+            {reservation.time} - {reservation.end}
           </div>
         )}
         cellTooltip={(timeBlock) => (
@@ -49,8 +50,8 @@ function App() {
                 gap: 10,
               }}
             >
-              ({reservation.name}),{reservation.capacity} pers. <br />
-              {reservation.start} - {reservation.end}
+              ({reservation.name}),{reservation.persons} pers. <br />
+              {reservation.time} - {reservation.end}
               <button onClick={close}>Close</button>
             </div>
           );

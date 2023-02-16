@@ -26,6 +26,7 @@ interface TableBookingCalendarProps {
   data: Room[];
   timeRange: TimeRange;
   lockedTime: string[];
+  date: Date;
   cellTooltip?: (time: TimeBlock) => React.ReactNode;
   reservationTooltip?: (reservation: Reservation) => React.ReactNode;
   reservationModal?: (
@@ -39,9 +40,10 @@ interface TableBookingCalendarProps {
 }
 
 export default function TableBookingCalendar({
-  data,
+  data = [],
   timeRange,
-  lockedTime,
+  date,
+  lockedTime = [],
   reservationTooltip,
   onReservationChange,
   cellTooltip,
@@ -89,7 +91,7 @@ export default function TableBookingCalendar({
     >
       <DndContext
         onDragStart={(e) => {
-          if (e?.active?.data?.current?.isLocked) {
+          if (e?.active?.data?.current?.lock_tables) {
             lockedMovingRef.current = true;
           } else lockedMovingRef.current = false;
           useEventsStore.getState().setIsDraging(true);
@@ -99,12 +101,15 @@ export default function TableBookingCalendar({
           lockedMovingRef.current = false;
           useEventsStore.getState().setIsDraging(false);
 
-          if (e.over?.id != undefined)
+          if (e.over?.id != undefined) {
+            const [prevTableId] = e.active.id.toString().split('-');
             onReservationChange?.({
+              prevTableId: +prevTableId,
               type: 'moved',
               newTableId: Number(e.over.id),
               reservation: e.active.data.current as any,
             });
+          }
         }}
       >
         <table
@@ -126,7 +131,7 @@ export default function TableBookingCalendar({
               )}
             </tr>
             <tr className="capacity">
-              <td>Capacity</td>
+              <td></td>
               {rangeList.map((time, index) => {
                 const isLocked = lockedTime.includes(
                   `${time.hour}:${time.minute}`,
@@ -154,7 +159,7 @@ export default function TableBookingCalendar({
                 (acc, table) =>
                   acc +
                   table.reservations.reduce(
-                    (ac, reservation) => ac + reservation.capacity,
+                    (ac, reservation) => ac + reservation.persons,
                     0,
                   ),
                 0,

@@ -19,36 +19,38 @@ export const useDataStore = create<DataState>()(
             {
               id: 1,
               name: 'Table A',
-              capacity: 6,
+              seats: 6,
               reservations: [
                 {
                   id: 1,
-                  start: '10:00',
+                  time: '10:00',
                   end: '11:45',
-                  capacity: 2,
+                  persons: 2,
                   name: 'Reservation A',
+                  lock_tables: false,
                 },
                 {
                   id: 2,
-                  start: '12:00',
+                  time: '12:00',
                   end: '13:45',
-                  capacity: 2,
+                  persons: 2,
                   name: 'Reservation B',
+                  lock_tables: true,
                 },
               ],
             },
             {
               id: 2,
               name: 'Table B',
-              capacity: 8,
+              seats: 8,
               reservations: [
                 {
                   id: 8,
-                  start: '10:00',
+                  time: '10:00',
                   end: '11:00',
-                  capacity: 10,
+                  persons: 10,
                   name: 'Reservation F',
-                  isLocked: true,
+                  lock_tables: true,
                   color: 'red',
                 },
               ],
@@ -62,35 +64,46 @@ export const useDataStore = create<DataState>()(
             {
               id: 3,
               name: 'Table C',
-              capacity: 6,
+              seats: 6,
               reservations: [
                 {
                   id: 3,
-                  start: '17:00',
+                  time: '17:00',
                   end: '18:45',
-                  capacity: 2,
+                  persons: 2,
                   name: 'Reservation C',
+                  lock_tables: false
                 },
                 {
                   id: 4,
-                  start: '13:00',
+                  time: '13:00',
                   end: '14:45',
-                  capacity: 2,
+                  persons: 2,
                   name: 'Reservation D',
+                  lock_tables: false
                 },
               ],
             },
             {
               id: 4,
               name: 'Table D',
-              capacity: 8,
+              seats: 8,
               reservations: [
                 {
+                  id: 3,
+                  time: '17:00',
+                  end: '18:45',
+                  persons: 2,
+                  name: 'Reservation C',
+                  lock_tables: false
+                },
+                {
                   id: 5,
-                  start: '15:00',
+                  time: '15:00',
                   end: '16:00',
-                  capacity: 10,
+                  persons: 10,
                   name: 'Reservation E',
+                  lock_tables: false
                 },
               ],
             },
@@ -123,13 +136,13 @@ export const useDataStore = create<DataState>()(
               .find((room) =>
                 room.tables.find((table) =>
                   table.reservations.find(
-                    (reservation) => reservation.id === change.reservation.id,
+                    (reservation) => (reservation.id === change.reservation.id && change.prevTableId === table.id)
                   ),
                 ),
               )
               ?.tables.find((table) =>
                 table.reservations.find(
-                  (reservation) => reservation.id === change.reservation.id,
+                  (reservation) => (reservation.id === change.reservation.id && change.prevTableId === table.id)
                 ),
               )?.reservations ?? [];
           data
@@ -140,7 +153,7 @@ export const useDataStore = create<DataState>()(
             ?.reservations.push(change.reservation);
           reservationTable.splice(
             reservationTable.findIndex(
-              (reservation) => reservation.id === change.reservation.id,
+              (reservation) => (reservation.id === change.reservation.id)
             ),
             1,
           );

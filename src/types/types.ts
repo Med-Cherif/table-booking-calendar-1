@@ -1,11 +1,11 @@
 export interface Reservation {
   id: number;
-  start: string;
+  time: string;
   end: string; //"08:55" format(newDate,"HH:mm")
-  capacity: number;
+  persons: number;
   name: string;
   color?: string;
-  isLocked?: boolean;
+  lock_tables: boolean;
 }
 export interface HourMinute {
   hour: string;
@@ -25,7 +25,7 @@ export interface TimeRange {
 export interface Table {
   id: number;
   name: string;
-  capacity: number;
+  seats: number;
   reservations: Reservation[];
 }
 export interface Room {
@@ -36,5 +36,5 @@ export interface Room {
 
 export type ChangeType = (
   | { type: 'resized'; newEndTime: string }
-  | { type: 'moved'; newTableId: number }
+  | { type: 'moved'; newTableId: number; prevTableId: number }
 ) & { reservation: Reservation };

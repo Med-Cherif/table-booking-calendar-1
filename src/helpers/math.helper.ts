@@ -7,18 +7,17 @@ export function calculateTimeBlock(data: Room[], time: HourMinute): TimeBlock {
   let reservationGuests = 0;
   data.forEach(({ tables }) => {
     tables.forEach(({ reservations }) => {
-      reservations.forEach(({ start, end, capacity }) => {
+      reservations.forEach(({ time: timeStart, end, persons }) => {
         const current = `${time.hour}:${time.minute}`;
         const currentDate = parse(current, 'HH:mm', new Date());
-        const startDate = parse(start, 'HH:mm', new Date());
+        const startDate = parse(timeStart, 'HH:mm', new Date());
         const endDate = subMinutes(parse(end, 'HH:mm', new Date()), 1);
-        if (start == current) {
-          reservationGuests += capacity;
+        if (timeStart == current) {
+          reservationGuests += persons;
           reservationCount++;
         }
-
         if (isWithinInterval(currentDate, { start: startDate, end: endDate }))
-          guestsCount += capacity;
+          guestsCount += persons;
       });
     });
   });

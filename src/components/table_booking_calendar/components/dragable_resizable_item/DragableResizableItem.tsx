@@ -10,6 +10,7 @@ import lock from '../../../../assets/icons/lock.svg';
 
 interface DragableResizableItemProps {
   factor: number;
+  tableId: number;
   onResized?: (factor: number) => void;
   onResizeStart?: () => void;
   onResizeEnd?: () => void;
@@ -28,6 +29,7 @@ const verticalDrag = (style: React.CSSProperties | undefined) =>
 
 export default function DragableResizableItem({
   factor,
+  tableId,
   onResized,
   reservation,
   modal,
@@ -55,7 +57,7 @@ export default function DragableResizableItem({
       setForceRender((f) => !f);
     }
     window.addEventListener('resize', resize);
-    if (reservation.isLocked) return;
+    if (reservation.lock_tables) return;
     const { current } = resizableRef;
     const { current: cursor } = resizableCursorRef;
     if (!current || !cursor) return;
@@ -104,7 +106,7 @@ export default function DragableResizableItem({
   }
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
-      id: reservation.id,
+      id: `${tableId}-${reservation.id}`,
       data: reservation,
     });
   const style = transform
@@ -120,7 +122,7 @@ export default function DragableResizableItem({
         id={`reservation-${reservation.id}`}
         ref={(e) => {
           resizableRef.current = e;
-          if (reservation.isLocked) return;
+          if (reservation.lock_tables) return;
           setNodeRef(e);
         }}
         onClick={(e) => {
@@ -128,11 +130,11 @@ export default function DragableResizableItem({
         }}
         style={{
           width: `${widthRef.current}px`,
-          ...(reservation.isLocked ? {} : verticalDrag(style)),
-          backgroundColor: reservation.color ?? '#b95501',
+          ...(reservation.lock_tables ? {} : verticalDrag(style)),
+          backgroundColor: '#b95501',
         }}
       >
-        {reservation.isLocked && <img src={lock} />}
+        {reservation.lock_tables && <img src={lock} />}
         <span
           {...listeners}
           {...attributes}
@@ -142,7 +144,7 @@ export default function DragableResizableItem({
         >
           {reservation.name}
         </span>
-        {!reservation.isLocked && (
+        {!reservation.lock_tables && (
           <div className="resize-cursor" ref={resizableCursorRef}>
             <div />
           </div>
