@@ -140,11 +140,12 @@ export default function DragableResizableItem({
       >
         {reservation.lock_tables && <img src={lock} />}
         <span
-          {...listeners}
-          {...attributes}
+          style={!reservation.name ? { height: '100%' } : undefined}
           onClick={() => {
             setShowModal(!showModal);
           }}
+          {...listeners}
+          {...attributes}
         >
           {reservation.name}
         </span>
