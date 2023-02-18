@@ -35,6 +35,6 @@ export interface Room {
 }
 
 export type ChangeType = (
-  | { type: 'resized'; newEndTime: string }
+  | { type: 'resized'; newEndTime: string; reservations: Reservation[] }
   | { type: 'moved'; newTableId: number; prevTableId: number }
 ) & { reservation: Reservation };

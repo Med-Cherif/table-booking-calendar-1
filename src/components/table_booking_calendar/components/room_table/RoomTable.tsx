@@ -74,6 +74,7 @@ export default function RoomTable({
                       type: 'resized',
                       newEndTime: `${newEndTime.hour}:${newEndTime.minute}`,
                       reservation,
+                      reservations: table.reservations,
                     });
                   }}
                 />
