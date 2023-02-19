@@ -26,7 +26,7 @@ interface TableBookingCalendarProps {
   data: Room[];
   timeRange: TimeRange;
   lockedTime: string[];
-  date: Date;
+  times: string[];
   cellTooltip?: (time: TimeBlock) => React.ReactNode;
   reservationTooltip?: (reservation: Reservation) => React.ReactNode;
   reservationModal?: (
@@ -42,7 +42,7 @@ interface TableBookingCalendarProps {
 export default function TableBookingCalendar({
   data = [],
   timeRange,
-  date,
+  times = [],
   lockedTime = [],
   reservationTooltip,
   onReservationChange,
@@ -52,10 +52,7 @@ export default function TableBookingCalendar({
   capacityModal,
   onReservationClick,
 }: TableBookingCalendarProps) {
-  const rangeList = useMemo(
-    () => rangeToTime(timeRange.startHour, timeRange.endHour, timeRange.step),
-    [timeRange],
-  );
+  const rangeList = useMemo(() => rangeToTime(times), [times]);
   const tableCount = useMemo(
     () => data.reduce((acc, { tables }) => acc + tables.length, 0),
     [data],
