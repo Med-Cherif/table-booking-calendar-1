@@ -43,8 +43,8 @@ function App() {
         lockedTime={['11:15']}
         times={getIntervalTimes({
           startTime: '08:00',
-          endTime: '13:00',
-        }).concat(getIntervalTimes({ startTime: '14:00', endTime: '23:00' }))}
+          endTime: '23:00',
+        })}
         timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
           <div style={{ fontSize: 'x-small' }}>

@@ -41,11 +41,11 @@ export const useDataStore = create<DataState>()(
               reservations: [
                 {
                   id: 9,
-                  time: '17:00',
-                  end: '18:45',
+                  time: '08:05',
+                  end: '10:00',
                   persons: 2,
                   name: '',
-                  lock_tables: false
+                  lock_tables: false,
                 },
               ],
             },
@@ -60,7 +60,7 @@ export const useDataStore = create<DataState>()(
                   end: '18:45',
                   persons: 2,
                   name: 'Reservation C',
-                  lock_tables: false
+                  lock_tables: false,
                 },
               ],
             },
