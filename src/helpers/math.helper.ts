@@ -1,4 +1,4 @@
-import { parse, subMinutes, isWithinInterval } from 'date-fns';
+import { parse, subMinutes, addMinutes, isWithinInterval } from 'date-fns';
 import { Room, HourMinute, TimeBlock } from '../types/types';
 
 export function calculateTimeBlock(data: Room[], time: HourMinute): TimeBlock {
