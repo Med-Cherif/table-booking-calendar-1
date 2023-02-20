@@ -39,18 +39,35 @@ export default function RoomTable({
         {table.name}
         {'(' + table.seats + ')'}
       </td>
-      {rangeList.map(({ hour, minute }, index) => {
-        const reservation = table.reservations.find(
-          ({ time }) => time == `${hour}:${minute}`,
-        );
+      {rangeList.map(({ hour, minute }, index, array) => {
+        let diff;
+        let diffResult;
+        let diffEndResult;
+        const reservation = table.reservations.find(({ time, id }) => {
+          const [reservationHour, reservationMinutes] = time.split(':');
+          diff = +reservationMinutes - +minute;
+          if (reservationHour === hour && diff <= 14 && diff >= 0) {
+            diffResult = diff;
+            return true;
+          }
+          return false;
+          // return reservationHour === hour && diff <= 14 && diff >= 0;
+        });
         let endTime: any, factor;
+        let diffEnd: number;
         if (reservation) {
           endTime = reservation.end.split(':');
+          const [bookingEndHour, bookingEndMinutes] = endTime;
           factor =
-            rangeList.findIndex(
-              ({ hour: h, minute: m }) =>
-                h == endTime?.[0] && m == endTime?.[1],
-            ) - index;
+            rangeList.findIndex(({ hour: h, minute: m }) => {
+              diffEnd = +bookingEndMinutes - +m;
+              if (h === bookingEndHour && diffEnd <= 14 && diffEnd >= 0) {
+                diffEndResult = diffEnd;
+                return true;
+                // return h === bookingEndHour && diffEnd <= 14 && diffEnd >= 0;
+              }
+              return false;
+            }) - index;
         }
 
         return (
@@ -64,15 +81,18 @@ export default function RoomTable({
               {reservation && (
                 <DragableResizableItem
                   tableId={table.id}
+                  diffResult={diffResult}
+                  diffEndResult={diffEndResult}
                   onDoubleClick={() => onReservationClick?.(reservation)}
                   modal={(close) => reservationModal?.(reservation, close)}
                   reservation={reservation}
                   factor={factor ?? 1}
-                  onResized={(f) => {
+                  onResized={(f, timeEnd) => {
                     const newEndTime = rangeList[index + f];
+                    const [h, m] = timeEnd.split(':');
                     onReservationChange?.({
                       type: 'resized',
-                      newEndTime: `${newEndTime.hour}:${newEndTime.minute}`,
+                      newEndTime: `${h}:${m}`,
                       reservation,
                       reservations: table.reservations,
                     });

@@ -6,12 +6,15 @@ import { useDraggable } from '@dnd-kit/core';
 import { useEventsStore } from '../../../../store/eventsStore';
 import ModalTip from '../modal_tip';
 import { Reservation } from '../../../../types/types';
+import { addMinutes, parse, format } from 'date-fns';
 import lock from '../../../../assets/icons/lock.svg';
 
 interface DragableResizableItemProps {
   factor: number;
   tableId: number;
-  onResized?: (factor: number) => void;
+  diffResult: number;
+  diffEndResult: number;
+  onResized?: (factor: number, timeEnd: any) => void;
   onResizeStart?: () => void;
   onResizeEnd?: () => void;
   modal?: (close: () => void) => React.ReactNode;
@@ -30,6 +33,8 @@ const verticalDrag = (style: React.CSSProperties | undefined) =>
 export default function DragableResizableItem({
   factor,
   tableId,
+  diffEndResult,
+  diffResult,
   onResized,
   reservation,
   modal,
@@ -41,19 +46,36 @@ export default function DragableResizableItem({
   const widthRef = useRef(0);
   const factorRef = useRef(factor);
   const tdWidthRef = useRef(0);
+  const marginLeftRef = useRef(0);
+  const [marginLeft] = useState(() => {
+    if (diffResult === 5) {
+      return '33.3333333';
+    } else if (diffResult === 10) {
+      return '66.6666666';
+    }
+    return 0;
+  });
+
+  useEffect(() => {
+    console.log({ diffEndResult, diffResult });
+  }, []);
 
   useEffect(() => {
     const wd =
       document.querySelector('.table-item')?.getClientRects()[0]?.width ?? 0;
-    widthRef.current = wd * factor;
+    const newMarginLeft = (diffResult * tdWidthRef.current) / 15;
+    const newAddedWidth = (diffEndResult * tdWidthRef.current) / 15;
+    widthRef.current = wd * factor - newMarginLeft + newAddedWidth;
     tdWidthRef.current = wd;
+    marginLeftRef.current = newMarginLeft;
     setForceRender(!forceRender);
 
     function resize() {
       const wtd =
         document.querySelector('.table-item')?.getClientRects()[0]?.width ?? 0;
       tdWidthRef.current = wtd;
-      widthRef.current = wtd * factorRef.current;
+      widthRef.current = wtd * factorRef.current - newMarginLeft;
+      marginLeftRef.current = newMarginLeft;
       setForceRender((f) => !f);
     }
     window.addEventListener('resize', resize);
@@ -72,12 +94,28 @@ export default function DragableResizableItem({
     };
     const onMouseUp = () => {
       document.body.style.cursor = 'default';
+      /**
+       * 15 min => 15px
+       * 5 min =>
+       */
       let newWidth =
         Math.round(widthRef.current / tdWidthRef.current) * tdWidthRef.current;
       newWidth = newWidth == 0 ? tdWidthRef.current : newWidth;
-      widthRef.current = newWidth;
-      factorRef.current = newWidth / tdWidthRef.current;
-      onResized?.(newWidth / tdWidthRef.current);
+      widthRef.current = newWidth - newMarginLeft + newAddedWidth;
+      factorRef.current =
+        (newWidth - newMarginLeft + newAddedWidth) / tdWidthRef.current;
+      marginLeftRef.current = newMarginLeft;
+      // console.log({ newWidth, tdWidthRef: tdWidthRef.current });
+      onResized?.(
+        newWidth / tdWidthRef.current,
+        format(
+          addMinutes(
+            parse(reservation.time, 'HH:mm', new Date()),
+            (newWidth / tdWidthRef.current) * 15,
+          ),
+          'HH:mm',
+        ),
+      );
       useEventsStore.getState().setIsResizing(false);
       current.style.width = `${newWidth}px`;
       document.removeEventListener('mousemove', onMouseMove);
@@ -134,6 +172,7 @@ export default function DragableResizableItem({
         }}
         style={{
           width: `${widthRef.current}px`,
+          marginLeft: `${marginLeftRef.current}px`,
           ...(reservation.lock_tables ? {} : verticalDrag(style)),
           backgroundColor: '#b95501',
         }}
