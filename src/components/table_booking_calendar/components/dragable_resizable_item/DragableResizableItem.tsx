@@ -57,10 +57,6 @@ export default function DragableResizableItem({
   });
 
   useEffect(() => {
-    console.log({ diffEndResult, diffResult });
-  }, []);
-
-  useEffect(() => {
     const wd =
       document.querySelector('.table-item')?.getClientRects()[0]?.width ?? 0;
     const newMarginLeft = (diffResult * tdWidthRef.current) / 15;
