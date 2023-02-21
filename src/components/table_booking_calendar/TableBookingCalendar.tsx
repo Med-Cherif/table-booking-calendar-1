@@ -73,7 +73,7 @@ export default function TableBookingCalendar({
   );
 
   useEffect(() => {
-    console.log('Version 1');
+    console.log('Version 1, test');
   }, []);
 
   return (
