@@ -59,18 +59,21 @@ export default function DragableResizableItem({
   useEffect(() => {
     const wd =
       document.querySelector('.table-item')?.getClientRects()[0]?.width ?? 0;
-    const newMarginLeft = (diffResult * tdWidthRef.current) / 15;
-    const newAddedWidth = (diffEndResult * tdWidthRef.current) / 15;
+    let newMarginLeft = (diffResult * wd) / 15;
+    let newAddedWidth = (diffEndResult * wd) / 15;
     widthRef.current = wd * factor - newMarginLeft + newAddedWidth;
     tdWidthRef.current = wd;
     marginLeftRef.current = newMarginLeft;
-    setForceRender(!forceRender);
+    setForceRender((f) => !f);
 
     function resize() {
       const wtd =
         document.querySelector('.table-item')?.getClientRects()[0]?.width ?? 0;
       tdWidthRef.current = wtd;
-      widthRef.current = wtd * factorRef.current - newMarginLeft;
+      newMarginLeft = (diffResult * wtd) / 15;
+      newAddedWidth = (diffEndResult * wtd) / 15;
+      widthRef.current =
+        wtd * factorRef.current - newMarginLeft + newAddedWidth;
       marginLeftRef.current = newMarginLeft;
       setForceRender((f) => !f);
     }
@@ -97,6 +100,8 @@ export default function DragableResizableItem({
       let newWidth =
         Math.round(widthRef.current / tdWidthRef.current) * tdWidthRef.current;
       newWidth = newWidth == 0 ? tdWidthRef.current : newWidth;
+      newMarginLeft = (diffResult * tdWidthRef.current) / 15;
+      newAddedWidth = (diffEndResult * tdWidthRef.current) / 15;
       widthRef.current = newWidth - newMarginLeft + newAddedWidth;
       factorRef.current =
         (newWidth - newMarginLeft + newAddedWidth) / tdWidthRef.current;
@@ -132,7 +137,7 @@ export default function DragableResizableItem({
       window.removeEventListener('resize', resize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [factor]);
+  }, [factor, diffEndResult, diffResult]);
 
   const [showModal, setShowModal] = useState(false);
   function handleModalClose() {
@@ -152,6 +157,8 @@ export default function DragableResizableItem({
   useEffect(() => {
     factorRef.current = factor;
   }, [factor]);
+
+  useEffect(() => {}, []);
 
   return (
     <>

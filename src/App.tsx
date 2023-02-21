@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import './App.scss';
 import TableBookingCalendar from './components/table_booking_calendar';
 import { useDataStore } from './store/dataStore';
@@ -35,7 +36,71 @@ export const getIntervalTimes = ({
 };
 
 function App() {
-  const { data, onChanges } = useDataStore();
+  const { data, onChanges, setData } = useDataStore();
+
+  useEffect(() => {
+    const getData = async () => {
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+      setData([
+        {
+          id: 1,
+          name: 'Room A',
+          tables: [
+            {
+              id: 1,
+              name: 'Table A',
+              seats: 6,
+              reservations: [],
+            },
+            {
+              id: 2,
+              name: 'Table B',
+              seats: 8,
+              reservations: [],
+            },
+          ],
+        },
+        {
+          id: 2,
+          name: 'Room B',
+          tables: [
+            {
+              id: 3,
+              name: 'Table C',
+              seats: 6,
+              reservations: [
+                {
+                  id: 9,
+                  time: '08:25',
+                  end: '09:55',
+                  persons: 2,
+                  name: '',
+                  lock_tables: false,
+                },
+              ],
+            },
+            {
+              id: 4,
+              name: 'Table D',
+              seats: 8,
+              reservations: [
+                {
+                  id: 3,
+                  time: '17:00',
+                  end: '18:45',
+                  persons: 2,
+                  name: 'Reservation C',
+                  lock_tables: false,
+                },
+              ],
+            },
+          ],
+        },
+      ]);
+    };
+    getData();
+  }, []);
+
   return (
     <div className="app-container">
       <TableBookingCalendar
