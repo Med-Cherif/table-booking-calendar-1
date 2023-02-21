@@ -39,10 +39,10 @@ export default function RoomTable({
         {table.name}
         {'(' + table.seats + ')'}
       </td>
-      {rangeList.map(({ hour, minute }, index, array) => {
+      {rangeList.map(({ hour, minute }, index) => {
         let diff;
-        let diffResult;
-        let diffEndResult;
+        let diffResult = 0;
+        let diffEndResult = 0;
         const reservation = table.reservations.find(({ time, id }) => {
           const [reservationHour, reservationMinutes] = time.split(':');
           diff = +reservationMinutes - +minute;
