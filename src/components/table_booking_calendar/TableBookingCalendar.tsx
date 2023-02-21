@@ -1,4 +1,4 @@
-import { Fragment, useMemo, useRef } from 'react';
+import { Fragment, useEffect, useMemo, useRef } from 'react';
 import CapacityCell from './components/capacity_cell';
 import './style/index.scss';
 import {
@@ -71,6 +71,11 @@ export default function TableBookingCalendar({
     () => rangeList.map((time) => calculateTimeBlock(data, time)),
     [data, rangeList],
   );
+
+  useEffect(() => {
+    console.log('Version 1');
+  }, []);
+
   return (
     <div
       className="table-booking-calendar"

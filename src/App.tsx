@@ -71,8 +71,8 @@ function App() {
               reservations: [
                 {
                   id: 9,
-                  time: '08:25',
-                  end: '09:55',
+                  time: '08:05',
+                  end: '09:05',
                   persons: 2,
                   name: '',
                   lock_tables: false,
@@ -108,7 +108,7 @@ function App() {
         lockedTime={['11:15']}
         times={getIntervalTimes({
           startTime: '08:00',
-          endTime: '23:00',
+          endTime: '16:00',
         })}
         timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
