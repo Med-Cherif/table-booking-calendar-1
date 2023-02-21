@@ -137,7 +137,7 @@ export default function DragableResizableItem({
       window.removeEventListener('resize', resize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [factor, diffEndResult, diffResult]);
+  }, [factor, diffEndResult, diffResult, reservation]);
 
   const [showModal, setShowModal] = useState(false);
   function handleModalClose() {
@@ -157,8 +157,6 @@ export default function DragableResizableItem({
   useEffect(() => {
     factorRef.current = factor;
   }, [factor]);
-
-  useEffect(() => {}, []);
 
   return (
     <>

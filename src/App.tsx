@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import './App.scss';
 import TableBookingCalendar from './components/table_booking_calendar';
 import { useDataStore } from './store/dataStore';
+import { format } from 'date-fns';
 
 export const getIntervalTimes = ({
   startTime = '00:00',
