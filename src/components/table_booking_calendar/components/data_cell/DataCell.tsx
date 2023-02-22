@@ -31,11 +31,13 @@ export default function DataCell({
         onMouseLeave={() => onHover(false)}
       >
         <div
-          className={'data-cell-content' + (focused == index ? ' focus' : '')}
+          // className={'data-cell-content' + (focused == index ? ' focus' : '')}
+          className={`data-cell-content ${focused == index ? 'focus' : ''} ${
+            pair ? 'pair' : ''
+          }`}
           ref={ref}
           onClick={onClick}
           id={`data-cell-${index}-${row}`}
-          style={{ backgroundColor: !pair ? 'white' : '#f7f7f7' }}
         ></div>
         {children}
       </div>

@@ -72,8 +72,8 @@ function App() {
               reservations: [
                 {
                   id: 9,
-                  time: '08:05',
-                  end: '09:05',
+                  time: '08:35',
+                  end: '10:05',
                   persons: 2,
                   name: '',
                   lock_tables: false,
@@ -85,14 +85,14 @@ function App() {
               name: 'Table D',
               seats: 8,
               reservations: [
-                {
-                  id: 3,
-                  time: '17:00',
-                  end: '18:45',
-                  persons: 2,
-                  name: 'Reservation C',
-                  lock_tables: false,
-                },
+                // {
+                //   id: 3,
+                //   time: '15:00',
+                //   end: '16:00',
+                //   persons: 2,
+                //   name: 'Reservation C',
+                //   lock_tables: false,
+                // },
               ],
             },
           ],
@@ -109,8 +109,13 @@ function App() {
         lockedTime={['11:15']}
         times={getIntervalTimes({
           startTime: '08:00',
-          endTime: '16:00',
-        })}
+          endTime: '12:15',
+        }).concat(
+          getIntervalTimes({
+            startTime: '13:00',
+            endTime: '21:00',
+          }),
+        )}
         timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
           <div style={{ fontSize: 'x-small' }}>
