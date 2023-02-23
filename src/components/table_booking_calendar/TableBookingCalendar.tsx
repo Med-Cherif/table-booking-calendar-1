@@ -21,6 +21,7 @@ import { Tooltip } from 'react-tooltip';
 import 'react-tooltip/dist/react-tooltip.css';
 import TimeIndicator from './components/time_indicator';
 import { calculateTimeBlock } from '../../helpers/math.helper';
+import { addMinutes, format, parse } from 'date-fns';
 
 interface TableBookingCalendarProps {
   data: Room[];
@@ -104,13 +105,42 @@ export default function TableBookingCalendar({
           useEventsStore.getState().setIsDraging(false);
 
           if (e.over?.id != undefined) {
+            console.log(e);
             const [prevTableId] = e.active.id.toString().split('-');
-            onReservationChange?.({
+            const { reservation, diffResult } = e.active.data.current!;
+            const wtd =
+              document.querySelector('.table-item')?.getClientRects()[0]
+                ?.width ?? 0;
+            const factor = Math.floor(Math.abs(e.delta.x) / wtd);
+            const directionNumber = e.delta.x < 0 ? -1 : 1;
+            console.log({ factor, x: e.delta.x });
+            const index = rangeList.findIndex((range) => {
+              const { hour, minute } = range;
+              const [h, m] = reservation.time.split(':');
+
+              const diff = +m - +minute;
+              if (h === hour && diff <= 14 && diff >= 0) {
+                return true;
+              }
+              return false;
+            });
+            const timeIndex = factor * directionNumber + index;
+            const { hour, minute } = rangeList[timeIndex];
+            const timeStart = format(
+              addMinutes(
+                parse(`${hour}:${minute}`, 'HH:mm', new Date()),
+                diffResult,
+              ),
+              'HH:mm',
+            );
+            const newData = {
               prevTableId: +prevTableId,
               type: 'moved',
+              newTimeStart: timeStart,
               newTableId: Number(e.over.id),
-              reservation: e.active.data.current as any,
-            });
+              reservation,
+            };
+            onReservationChange?.(newData);
           }
         }}
       >

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import './App.scss';
 import TableBookingCalendar from './components/table_booking_calendar';
 import { useDataStore } from './store/dataStore';
-import { format } from 'date-fns';
+import { format, differenceInMinutes, parse, addMinutes } from 'date-fns';
 
 export const getIntervalTimes = ({
   startTime = '00:00',
@@ -41,66 +41,14 @@ function App() {
 
   useEffect(() => {
     const getData = async () => {
-      await new Promise((resolve) => setTimeout(resolve, 2000));
-      setData([
-        {
-          id: 1,
-          name: 'Room A',
-          tables: [
-            {
-              id: 1,
-              name: 'Table A',
-              seats: 6,
-              reservations: [],
-            },
-            {
-              id: 2,
-              name: 'Table B',
-              seats: 8,
-              reservations: [],
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: 'Room B',
-          tables: [
-            {
-              id: 3,
-              name: 'Table C',
-              seats: 6,
-              reservations: [
-                {
-                  id: 9,
-                  time: '08:35',
-                  end: '10:05',
-                  persons: 2,
-                  name: '',
-                  lock_tables: false,
-                },
-              ],
-            },
-            {
-              id: 4,
-              name: 'Table D',
-              seats: 8,
-              reservations: [
-                // {
-                //   id: 3,
-                //   time: '15:00',
-                //   end: '16:00',
-                //   persons: 2,
-                //   name: 'Reservation C',
-                //   lock_tables: false,
-                // },
-              ],
-            },
-          ],
-        },
-      ]);
+      // await new Promise((resolve) => setTimeout(resolve, 2000));
+      // setData([
+      // ]);
     };
     getData();
   }, []);
+
+  // console.log(data);
 
   return (
     <div className="app-container">
@@ -135,8 +83,19 @@ function App() {
           </div>
         )}
         onReservationChange={(change) => {
-          console.log(change);
-          onChanges(change);
+          // console.log(change);
+          const startTIme = parse(change.reservation.time, 'HH:mm', new Date());
+          const endTIme = parse(change.reservation.end, 'HH:mm', new Date());
+          const duration = differenceInMinutes(endTIme, startTIme);
+          console.log();
+          const newEndTime = format(
+            addMinutes(
+              parse(change.newTimeStart, 'HH:mm', new Date()),
+              duration,
+            ),
+            'HH:mm',
+          );
+          onChanges({ ...change, end: newEndTime });
         }}
         onEmptyCellClick={(time) => {
           console.log(time);

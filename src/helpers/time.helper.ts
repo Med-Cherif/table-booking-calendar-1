@@ -2,7 +2,7 @@ import { HourMinute } from '../types/types';
 
 export function rangeToTime(times: string[]) {
   const res: HourMinute[] = [];
-  times.forEach((time) => {
+  times.forEach((time, index) => {
       const [hour, minute] = time.split(':');
       res.push({
         hour,
