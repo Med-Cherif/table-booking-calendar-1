@@ -27,7 +27,7 @@ const verticalDrag = (style: React.CSSProperties | undefined) =>
   style?.transform
     ? {
         ...style,
-        transform: `translateY(${style.transform.split(',')[1]}`,
+        // transform: `translateY(${style.transform.split(',')[1]}`,
       }
     : style;
 
@@ -66,7 +66,9 @@ export default function DragableResizableItem({
     widthRef.current = wd * factor - newMarginLeft + newAddedWidth;
     tdWidthRef.current = wd;
     marginLeftRef.current = newMarginLeft;
-    setForceRender((f) => !f);
+    let timeout = setTimeout(() => {
+      setForceRender((f) => !f);
+    }, 0);
 
     function resize() {
       const wtd =
@@ -137,6 +139,7 @@ export default function DragableResizableItem({
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       window.removeEventListener('resize', resize);
+      clearTimeout(timeout);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [factor, diffEndResult, diffResult, reservation, rangeList]);
@@ -148,7 +151,10 @@ export default function DragableResizableItem({
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useDraggable({
       id: `${tableId}-${reservation.id}`,
-      data: reservation,
+      data: {
+        reservation,
+        diffResult,
+      },
     });
   const style = transform
     ? {
