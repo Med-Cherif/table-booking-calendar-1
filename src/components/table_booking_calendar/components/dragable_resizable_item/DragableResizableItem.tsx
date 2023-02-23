@@ -5,7 +5,7 @@ import { Overlay } from 'react-bootstrap';
 import { useDraggable } from '@dnd-kit/core';
 import { useEventsStore } from '../../../../store/eventsStore';
 import ModalTip from '../modal_tip';
-import { Reservation } from '../../../../types/types';
+import { HourMinute, Reservation } from '../../../../types/types';
 import { addMinutes, parse, format } from 'date-fns';
 import lock from '../../../../assets/icons/lock.svg';
 
@@ -14,6 +14,7 @@ interface DragableResizableItemProps {
   tableId: number;
   diffResult: number;
   diffEndResult: number;
+  rangeList: HourMinute[];
   onResized?: (factor: number, timeEnd: any) => void;
   onResizeStart?: () => void;
   onResizeEnd?: () => void;
@@ -38,6 +39,7 @@ export default function DragableResizableItem({
   onResized,
   reservation,
   modal,
+  rangeList,
   onDoubleClick,
 }: DragableResizableItemProps) {
   const resizableRef = useRef<HTMLDivElement | null>(null);
@@ -137,7 +139,7 @@ export default function DragableResizableItem({
       window.removeEventListener('resize', resize);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [factor, diffEndResult, diffResult, reservation]);
+  }, [factor, diffEndResult, diffResult, reservation, rangeList]);
 
   const [showModal, setShowModal] = useState(false);
   function handleModalClose() {
@@ -156,7 +158,7 @@ export default function DragableResizableItem({
 
   useEffect(() => {
     factorRef.current = factor;
-  }, [factor]);
+  }, [factor, rangeList]);
 
   return (
     <>

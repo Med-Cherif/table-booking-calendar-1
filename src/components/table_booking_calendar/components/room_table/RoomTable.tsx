@@ -80,6 +80,7 @@ export default function RoomTable({
             >
               {reservation && (
                 <DragableResizableItem
+                  rangeList={rangeList}
                   tableId={table.id}
                   diffResult={diffResult}
                   diffEndResult={diffEndResult}

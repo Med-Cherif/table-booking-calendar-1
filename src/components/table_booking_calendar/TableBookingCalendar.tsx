@@ -180,8 +180,8 @@ export default function TableBookingCalendar({
                       <RoomTable
                         row={index + tableBefore}
                         key={table.id}
-                        table={table}
                         rangeList={rangeList}
+                        table={table}
                         onReservationChange={onReservationChange}
                         onEmptyCellClick={(tIndex) =>
                           onEmptyCellClick?.(timeBlocks[tIndex])
