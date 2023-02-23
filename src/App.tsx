@@ -57,13 +57,8 @@ function App() {
         lockedTime={['11:15']}
         times={getIntervalTimes({
           startTime: '08:00',
-          endTime: '12:15',
-        }).concat(
-          getIntervalTimes({
-            startTime: '13:00',
-            endTime: '21:00',
-          }),
-        )}
+          endTime: '21:00',
+        })}
         timeRange={{ endHour: 24, startHour: 8, step: 15 }}
         reservationTooltip={(reservation) => (
           <div style={{ fontSize: 'x-small' }}>
@@ -84,18 +79,25 @@ function App() {
         )}
         onReservationChange={(change) => {
           // console.log(change);
-          const startTIme = parse(change.reservation.time, 'HH:mm', new Date());
-          const endTIme = parse(change.reservation.end, 'HH:mm', new Date());
-          const duration = differenceInMinutes(endTIme, startTIme);
-          console.log();
-          const newEndTime = format(
-            addMinutes(
-              parse(change.newTimeStart, 'HH:mm', new Date()),
-              duration,
-            ),
-            'HH:mm',
-          );
-          onChanges({ ...change, end: newEndTime });
+          if (change.type === 'moved') {
+            const startTIme = parse(
+              change.reservation.time,
+              'HH:mm',
+              new Date(),
+            );
+            const endTIme = parse(change.reservation.end, 'HH:mm', new Date());
+            const duration = differenceInMinutes(endTIme, startTIme);
+            const newEndTime = format(
+              addMinutes(
+                parse(change.newTimeStart, 'HH:mm', new Date()),
+                duration,
+              ),
+              'HH:mm',
+            );
+            onChanges({ ...change, end: newEndTime });
+          } else {
+            onChanges(change);
+          }
         }}
         onEmptyCellClick={(time) => {
           console.log(time);

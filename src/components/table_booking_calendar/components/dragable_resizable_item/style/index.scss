@@ -32,6 +32,9 @@
     cursor: ew-resize;
     display: flex;
     align-items: center;
+    &.l {
+      left: 4px;
+    }
     > div {
       height: 80%;
       width: 3px;

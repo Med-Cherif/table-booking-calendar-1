@@ -73,9 +73,9 @@ export default function TableBookingCalendar({
     [data, rangeList],
   );
 
-  useEffect(() => {
-    console.log('Latest Version');
-  }, []);
+  // useEffect(() => {
+  //   // console.log('Latest Version');
+  // }, []);
 
   return (
     <div
@@ -105,7 +105,6 @@ export default function TableBookingCalendar({
           useEventsStore.getState().setIsDraging(false);
 
           if (e.over?.id != undefined) {
-            console.log(e);
             const [prevTableId] = e.active.id.toString().split('-');
             const { reservation, diffResult } = e.active.data.current!;
             const wtd =
@@ -113,7 +112,6 @@ export default function TableBookingCalendar({
                 ?.width ?? 0;
             const factor = Math.floor(Math.abs(e.delta.x) / wtd);
             const directionNumber = e.delta.x < 0 ? -1 : 1;
-            console.log({ factor, x: e.delta.x });
             const index = rangeList.findIndex((range) => {
               const { hour, minute } = range;
               const [h, m] = reservation.time.split(':');
@@ -140,7 +138,7 @@ export default function TableBookingCalendar({
               newTableId: Number(e.over.id),
               reservation,
             };
-            onReservationChange?.(newData);
+            onReservationChange?.(newData as any);
           }
         }}
       >
