@@ -72,6 +72,10 @@ export default function TableBookingCalendar({
     [data, rangeList],
   );
 
+  useEffect(() => {
+    console.log('Latest Version');
+  }, []);
+
   return (
     <div
       className="table-booking-calendar"
