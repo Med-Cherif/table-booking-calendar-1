@@ -88,12 +88,12 @@ export default function RoomTable({
                   modal={(close) => reservationModal?.(reservation, close)}
                   reservation={reservation}
                   factor={factor ?? 1}
-                  onResized={(f, timeEnd) => {
-                    const newEndTime = rangeList[index + f];
-                    const [h, m] = timeEnd.split(':');
-                    onReservationChange?.({
+                  onResized={(f, time) => {
+                    (onReservationChange as any)?.({
+                      from: f,
                       type: 'resized',
-                      newEndTime: `${h}:${m}`,
+                      newEndTime: time,
+                      newStartTime: time,
                       reservation,
                       reservations: table.reservations,
                     });

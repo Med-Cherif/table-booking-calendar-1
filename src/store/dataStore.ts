@@ -75,7 +75,11 @@ export const useDataStore = create<DataState>()(
             room.tables.filter((table) =>
               table.reservations.map((reservation) => {
                 if (reservation.id === change.reservation.id) {
-                  reservation.end = change.newEndTime;
+                  if ((change as any).from === 'end') {
+                    reservation.end = (change as any).newEndTime;
+                  } else if ((change as any).from === 'start') {
+                    reservation.time = (change as any).newStartTime;
+                  }
                 }
                 return reservation;
               }),

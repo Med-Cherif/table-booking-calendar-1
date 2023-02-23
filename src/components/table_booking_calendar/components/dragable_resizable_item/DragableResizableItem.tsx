@@ -15,7 +15,7 @@ interface DragableResizableItemProps {
   diffResult: number;
   diffEndResult: number;
   rangeList: HourMinute[];
-  onResized?: (factor: number, timeEnd: any) => void;
+  onResized?: (from: 'start' | 'end', time: string) => void;
   onResizeStart?: () => void;
   onResizeEnd?: () => void;
   modal?: (close: () => void) => React.ReactNode;
@@ -44,8 +44,13 @@ export default function DragableResizableItem({
 }: DragableResizableItemProps) {
   const resizableRef = useRef<HTMLDivElement | null>(null);
   const resizableCursorRef = useRef<HTMLDivElement | null>(null);
+  const resizableCursorRefLeft = useRef<HTMLDivElement | null>(null);
   const [forceRender, setForceRender] = useState(false);
+  const resizeFrom = useRef<'right' | 'left' | null>(null);
+  const startX = useRef<null | number>(null);
+  const startWidth = useRef<null | number>(null);
   const widthRef = useRef(0);
+  const leftRef = useRef(0);
   const factorRef = useRef(factor);
   const tdWidthRef = useRef(0);
   const marginLeftRef = useRef(0);
@@ -85,57 +90,116 @@ export default function DragableResizableItem({
     if (reservation.lock_tables) return;
     const { current } = resizableRef;
     const { current: cursor } = resizableCursorRef;
-    if (!current || !cursor) return;
+    const { current: leftCursor } = resizableCursorRefLeft;
+    if (!current || !cursor || !leftCursor) return;
     const onMouseMove = (e: MouseEvent) => {
       useEventsStore.getState().setIsResizing(true);
-      const { clientX } = e;
-      const { left } = current.getBoundingClientRect();
-      const newWidth = clientX - left;
-      if (newWidth < 0) return;
-      widthRef.current = newWidth;
-      current.style.width = `${newWidth}px`;
+      if (resizeFrom.current === 'right') {
+        const { clientX } = e;
+        const { left } = current.getBoundingClientRect();
+        const newWidth = clientX - left;
+        if (newWidth < 0) return;
+        widthRef.current = newWidth;
+        current.style.width = `${newWidth}px`;
+      } else if (resizeFrom.current === 'left') {
+        const { clientX } = e;
+        const x = (clientX - startX.current!) as number;
+        // if (newWidth < 0) return;
+        leftRef.current = x;
+        const newWidth = startWidth.current! - x;
+        widthRef.current = newWidth;
+        current.style.left = `${x}px`;
+        current.style.width = `${newWidth}px`;
+      }
     };
     const onMouseUp = () => {
       document.body.style.cursor = 'default';
-      /**
-       * 15 min => 15px
-       * 5 min =>
-       */
-      let newWidth =
-        Math.round(widthRef.current / tdWidthRef.current) * tdWidthRef.current;
-      newWidth = newWidth == 0 ? tdWidthRef.current : newWidth;
-      newMarginLeft = (diffResult * tdWidthRef.current) / 15;
-      newAddedWidth = (diffEndResult * tdWidthRef.current) / 15;
-      widthRef.current = newWidth - newMarginLeft + newAddedWidth;
-      factorRef.current =
-        (newWidth - newMarginLeft + newAddedWidth) / tdWidthRef.current;
-      marginLeftRef.current = newMarginLeft;
-      // console.log({ newWidth, tdWidthRef: tdWidthRef.current });
-      onResized?.(
-        newWidth / tdWidthRef.current,
-        format(
+      if (resizeFrom.current === 'left') {
+        const wtd =
+          document.querySelector('.table-item')?.getClientRects()[0]?.width ??
+          0;
+        const fac = Math.floor(Math.abs(leftRef.current) / wtd);
+        const directionNumber = leftRef.current < 0 ? -1 : 1;
+
+        const index = rangeList.findIndex((range) => {
+          const { hour, minute } = range;
+          const [h, m] = reservation.time.split(':');
+
+          const diff = +m - +minute;
+          if (h === hour && diff <= 14 && diff >= 0) {
+            return true;
+          }
+          return false;
+        });
+        const timeIndex = fac * directionNumber + index;
+        const { hour, minute } = rangeList?.[timeIndex];
+
+        const timeStart = format(
           addMinutes(
-            parse(reservation.time, 'HH:mm', new Date()),
-            (newWidth / tdWidthRef.current) * 15,
+            parse(`${hour}:${minute}`, 'HH:mm', new Date()),
+            diffResult,
           ),
           'HH:mm',
-        ),
-      );
+        );
+
+        onResized?.('start', timeStart);
+
+        startX.current = null;
+        startWidth.current = null;
+        leftRef.current = 0;
+      } else {
+        let newWidth =
+          Math.round(widthRef.current / tdWidthRef.current) *
+          tdWidthRef.current;
+        newWidth = newWidth == 0 ? tdWidthRef.current : newWidth;
+        newMarginLeft = (diffResult * tdWidthRef.current) / 15;
+        newAddedWidth = (diffEndResult * tdWidthRef.current) / 15;
+        widthRef.current = newWidth - newMarginLeft + newAddedWidth;
+        factorRef.current =
+          (newWidth - newMarginLeft + newAddedWidth) / tdWidthRef.current;
+        marginLeftRef.current = newMarginLeft;
+
+        current.style.width = `${newWidth}px`;
+        onResized?.(
+          'end',
+          format(
+            addMinutes(
+              parse(reservation.time, 'HH:mm', new Date()),
+              (newWidth / tdWidthRef.current) * 15,
+            ),
+            'HH:mm',
+          ),
+        );
+      }
       useEventsStore.getState().setIsResizing(false);
-      current.style.width = `${newWidth}px`;
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
+      resizeFrom.current = null;
     };
     const onMouseDown = (e: MouseEvent) => {
       e.preventDefault();
+      resizeFrom.current = 'right';
       document.body.style.cursor = 'ew-resize';
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
       resizableRef.current?.classList.remove('transition');
     };
+
+    const onMouseDownLeft = (e: MouseEvent) => {
+      e.preventDefault();
+      resizeFrom.current = 'left';
+      startX.current = e.clientX;
+      startWidth.current = resizableRef.current?.getBoundingClientRect()
+        ?.width as number;
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
+      resizableRef.current?.classList.remove('transition');
+    };
     cursor.addEventListener('mousedown', onMouseDown);
+    leftCursor.addEventListener('mousedown', onMouseDownLeft);
     return () => {
       cursor.removeEventListener('mousedown', onMouseDown);
+      leftCursor.removeEventListener('mousedown', onMouseDownLeft);
       document.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseup', onMouseUp);
       window.removeEventListener('resize', resize);
@@ -198,9 +262,14 @@ export default function DragableResizableItem({
           {reservation.name}
         </span>
         {!reservation.lock_tables && (
-          <div className="resize-cursor" ref={resizableCursorRef}>
-            <div />
-          </div>
+          <>
+            <div className="resize-cursor" ref={resizableCursorRef}>
+              <div />
+            </div>
+            <div className="resize-cursor l" ref={resizableCursorRefLeft}>
+              <div />
+            </div>
+          </>
         )}
       </div>
 
