@@ -62,7 +62,7 @@ export default function RoomTable({
         if (reservation) {
           endTime = reservation.end.split(':');
           const [bookingEndHour, bookingEndMinutes] = endTime;
-          factor =
+          const idx =
             rangeList.findIndex(({ hour: h, minute: m }) => {
               diffEnd = +bookingEndMinutes - +m;
               if (h === bookingEndHour && diffEnd <= 14 && diffEnd >= 0) {
@@ -72,6 +72,11 @@ export default function RoomTable({
               }
               return false;
             }) - index;
+          if (idx >= 0) {
+            factor = idx;
+          } else {
+            factor = rangeList.length - index;
+          }
         }
 
         return (
