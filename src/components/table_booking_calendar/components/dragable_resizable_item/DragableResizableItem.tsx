@@ -131,22 +131,36 @@ export default function DragableResizableItem({
           }
           return false;
         });
-        const timeIndex = fac * directionNumber + index;
-        const { hour, minute } = rangeList?.[timeIndex];
-
-        const timeStart = format(
-          addMinutes(
-            parse(`${hour}:${minute}`, 'HH:mm', new Date()),
-            diffResult,
-          ),
-          'HH:mm',
-        );
-
-        onResized?.('start', timeStart);
-
+        // if (index !== -1)
         startX.current = null;
         startWidth.current = null;
         leftRef.current = 0;
+        const timeIndex = fac * directionNumber + index;
+        let hour;
+        let minute;
+        if (rangeList?.[timeIndex]) {
+          const rangeItem = rangeList?.[timeIndex];
+          hour = rangeItem.hour;
+          minute = rangeItem.minute;
+          const timeStart = format(
+            addMinutes(
+              parse(`${hour}:${minute}`, 'HH:mm', new Date()),
+              diffResult,
+            ),
+            'HH:mm',
+          );
+          onResized?.('start', timeStart);
+        } else {
+          // console.log(reservation.time);
+          // // const timeStart = format(
+          // //   addMinutes(
+          // //     parse(reservation.time, 'HH:mm', new Date()),
+          // //     diffResult,
+          // //   ),
+          // //   'HH:mm',
+          // // );
+          onResized?.('start', reservation.time);
+        }
       } else {
         let newWidth =
           Math.round(widthRef.current / tdWidthRef.current) *
@@ -160,16 +174,39 @@ export default function DragableResizableItem({
         marginLeftRef.current = newMarginLeft;
 
         current.style.width = `${newWidth}px`;
-        onResized?.(
-          'end',
-          format(
-            addMinutes(
-              parse(reservation.time, 'HH:mm', new Date()),
-              (newWidth / tdWidthRef.current) * 15,
-            ),
-            'HH:mm',
+
+        const end = format(
+          addMinutes(
+            parse(reservation.time, 'HH:mm', new Date()),
+            (newWidth / tdWidthRef.current) * 15,
           ),
+          'HH:mm',
         );
+        const index = rangeList.findIndex((range) => {
+          const { hour, minute } = range;
+          const [h, m] = end.split(':');
+
+          const diff = +m - +minute;
+          if (h === hour && diff <= 14 && diff >= 0) {
+            return true;
+          }
+          return false;
+        });
+
+        if (rangeList.length === index || index === -1) {
+          onResized?.('end', reservation.end);
+        } else {
+          onResized?.(
+            'end',
+            format(
+              addMinutes(
+                parse(reservation.time, 'HH:mm', new Date()),
+                (newWidth / tdWidthRef.current) * 15,
+              ),
+              'HH:mm',
+            ),
+          );
+        }
       }
       useEventsStore.getState().setIsResizing(false);
       document.removeEventListener('mousemove', onMouseMove);
