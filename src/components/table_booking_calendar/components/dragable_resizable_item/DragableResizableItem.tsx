@@ -15,8 +15,10 @@ interface DragableResizableItemProps {
   diffResult: number;
   diffEndResult: number;
   rangeList: HourMinute[];
+  noNameText: string;
   onResized?: (from: 'start' | 'end', time: string) => void;
   onResizeStart?: () => void;
+  reservationColor?: (reservation: Reservation) => string;
   onResizeEnd?: () => void;
   modal?: (close: () => void) => React.ReactNode;
   reservation: Reservation;
@@ -36,7 +38,9 @@ export default function DragableResizableItem({
   tableId,
   diffEndResult,
   diffResult,
+  noNameText,
   onResized,
+  reservationColor,
   reservation,
   modal,
   rangeList,
@@ -71,7 +75,7 @@ export default function DragableResizableItem({
     widthRef.current = wd * factor - newMarginLeft + newAddedWidth;
     tdWidthRef.current = wd;
     marginLeftRef.current = newMarginLeft;
-    let timeout = setTimeout(() => {
+    const timeout = setTimeout(() => {
       setForceRender((f) => !f);
     }, 0);
 
@@ -284,19 +288,21 @@ export default function DragableResizableItem({
           width: `${widthRef.current}px`,
           marginLeft: `${marginLeftRef.current}px`,
           ...(reservation.lock_tables ? {} : verticalDrag(style)),
-          backgroundColor: '#b95501',
+          backgroundColor: reservationColor?.(reservation) || '#b95501',
         }}
       >
         {reservation.lock_tables && <img src={lock} />}
         <span
-          style={!reservation.name ? { height: '100%' } : undefined}
+          style={{
+            paddingLeft: 4,
+          }}
           onClick={() => {
             setShowModal(!showModal);
           }}
           {...listeners}
           {...attributes}
         >
-          {reservation.name}
+          {reservation.name || noNameText}
         </span>
         {!reservation.lock_tables && (
           <>

@@ -99,11 +99,14 @@ function App() {
             onChanges(change);
           }
         }}
-        onEmptyCellClick={(time) => {
-          console.log(time);
+        onEmptyCellClick={(time, tableID) => {
+          console.log(time, tableID);
         }}
         onReservationClick={(reservation) => {
           console.log(reservation);
+        }}
+        reservationColor={(reservation) => {
+          return '#b95501';
         }}
         reservationModal={(reservation, close) => {
           return (
