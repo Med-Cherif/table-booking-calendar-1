@@ -28,7 +28,7 @@ interface TableBookingCalendarProps {
   timeRange: TimeRange;
   lockedTime: string[];
   times: string[];
-  noNameText: string;
+  noNameText?: string;
   cellTooltip?: (time: TimeBlock) => React.ReactNode;
   reservationColor?: (reservation: Reservation) => string;
   reservationTooltip?: (reservation: Reservation) => React.ReactNode;
