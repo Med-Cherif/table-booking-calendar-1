@@ -11,9 +11,11 @@ import DragableResizableItem from '../dragable_resizable_item';
 interface RoomTableProps {
   table: Table;
   row: number;
+  noNameText: string;
   rangeList: HourMinute[];
   onReservationChange?: (change: ChangeType) => void;
   onEmptyCellClick?: (timeIndex: number) => void;
+  reservationColor?: (reservation: Reservation) => string;
   reservationModal?: (
     reservation: Reservation,
     close: () => void,
@@ -25,9 +27,11 @@ export default function RoomTable({
   table,
   row,
   rangeList,
+  noNameText,
   onReservationChange,
   onEmptyCellClick,
   reservationModal,
+  reservationColor,
   onReservationClick,
 }: RoomTableProps) {
   const { setNodeRef, isOver } = useDroppable({
@@ -81,8 +85,10 @@ export default function RoomTable({
               {reservation && (
                 <DragableResizableItem
                   rangeList={rangeList}
+                  noNameText={noNameText}
                   tableId={table.id}
                   diffResult={diffResult}
+                  reservationColor={reservationColor}
                   diffEndResult={diffEndResult}
                   onDoubleClick={() => onReservationClick?.(reservation)}
                   modal={(close) => reservationModal?.(reservation, close)}

@@ -36,7 +36,7 @@ export const useDataStore = create<DataState>()(
           name: 'Room B',
           tables: [
             {
-              id: 3,
+              id: 15,
               name: 'Table C',
               seats: 6,
               reservations: [

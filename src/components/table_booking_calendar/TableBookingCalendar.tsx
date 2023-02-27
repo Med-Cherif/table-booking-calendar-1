@@ -28,14 +28,16 @@ interface TableBookingCalendarProps {
   timeRange: TimeRange;
   lockedTime: string[];
   times: string[];
+  noNameText: string;
   cellTooltip?: (time: TimeBlock) => React.ReactNode;
+  reservationColor?: (reservation: Reservation) => string;
   reservationTooltip?: (reservation: Reservation) => React.ReactNode;
   reservationModal?: (
     reservation: Reservation,
     close: () => void,
   ) => React.ReactNode;
   capacityModal?: (time: TimeBlock, close: () => void) => React.ReactNode;
-  onEmptyCellClick?: (time: TimeBlock) => void;
+  onEmptyCellClick?: (time: TimeBlock, table: string | number) => void;
   onReservationChange?: (change: ChangeType) => void;
   onReservationClick?: (reservation: Reservation) => void;
 }
@@ -45,9 +47,11 @@ export default function TableBookingCalendar({
   timeRange,
   times = [],
   lockedTime = [],
+  noNameText = 'no name',
   reservationTooltip,
   onReservationChange,
   cellTooltip,
+  reservationColor,
   onEmptyCellClick,
   reservationModal,
   capacityModal,
@@ -210,13 +214,15 @@ export default function TableBookingCalendar({
                   {room.tables.map((table, index) => {
                     return (
                       <RoomTable
+                        noNameText={noNameText}
                         row={index + tableBefore}
                         key={table.id}
                         rangeList={rangeList}
+                        reservationColor={reservationColor}
                         table={table}
                         onReservationChange={onReservationChange}
                         onEmptyCellClick={(tIndex) =>
-                          onEmptyCellClick?.(timeBlocks[tIndex])
+                          onEmptyCellClick?.(timeBlocks[tIndex], table.id)
                         }
                         reservationModal={reservationModal}
                         onReservationClick={onReservationClick}
